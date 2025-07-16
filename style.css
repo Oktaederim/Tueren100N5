@@ -1,0 +1,47 @@
+/* Globale Einstellungen für die Inter-Schriftart */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Custom styles for range input thumbs and tracks for better visual consistency */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #2563EB; /* Blue-600 */
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+}
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #2563EB; /* Blue-600 */
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+}
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: #D1D5DB; /* Gray-300 */
+    border-radius: 4px;
+    cursor: pointer;
+}
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: #D1D5DB; /* Gray-300 */
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Farbcodes für Ergebnisse */
+.bg-ok { background-color: #D1FAE5; /* green-100 */ }
+.bg-warning { background-color: #FEF3C7; /* yellow-100 */ }
+.bg-danger { background-color: #FEE2E2; /* red-100 */ }
+.text-ok { color: #059669; /* green-600 */ }
+.text-warning { color: #D97706; /* yellow-700 */ }
+.text-danger { color: #DC2626; /* red-600 */ }
+
