@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBA-Türen Rechner: Sicherheit in Rettungswegen</title>
+    <!-- Tailwind CSS CDN für schnelles Styling und Responsivität -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link zur externen CSS-Datei -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl">
+        <!-- Titel der Anwendung -->
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6 rounded-md p-2">DBA-Türen Rechner: Sicherheit in Rettungswegen</h1>
+
+        <div class="space-y-6">
+            <!-- Eingaben -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Türbreite -->
+                <div>
+                    <label for="doorWidth" class="block text-sm font-medium text-gray-700">Türbreite (B) [m]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <input type="range" id="doorWidthSlider" min="0" max="3.00" step="0.01" value="1.00" class="flex-grow">
+                        <input type="number" id="doorWidth" min="0" max="3.00" step="0.01" value="1.00" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Türhöhe -->
+                <div>
+                    <label for="doorHeight" class="block text-sm font-medium text-gray-700">Türhöhe (H) [m]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <input type="range" id="doorHeightSlider" min="0" max="3.00" step="0.01" value="2.00" class="flex-grow">
+                        <input type="number" id="doorHeight" min="0" max="3.00" step="0.01" value="2.00" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Differenzdruck -->
+                <div>
+                    <label for="differentialPressure" class="block text-sm font-medium text-gray-700">Differenzdruck (Δp) [Pa]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <input type="range" id="differentialPressureSlider" min="0" max="300" step="1" value="50" class="flex-grow">
+                        <input type="number" id="differentialPressure" min="0" max="300" step="1" value="50" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Türschließer-Moment -->
+                <div>
+                    <label for="doorCloserMoment" class="block text-sm font-medium text-gray-700">Türschließer-Moment (M₀) [Nm]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <input type="range" id="doorCloserMomentSlider" min="0" max="50" step="1" value="0" class="flex-grow">
+                        <input type="number" id="doorCloserMoment" min="0" max="50" step="1" value="0" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Abstand b2 (Türgriff zu Drehachse) -->
+                <div>
+                    <label for="b2Distance" class="block text-sm font-medium text-gray-700">Abstand Türgriff zu Drehachse (b2) [m]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <!-- min="0" for hatches, max will be dynamically set by JS based on B -->
+                        <input type="range" id="b2DistanceSlider" min="0" max="1.50" step="0.01" value="0.50" class="flex-grow">
+                        <input type="number" id="b2Distance" min="0" max="1.50" step="0.01" value="0.50" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <!-- Volumenstrom -->
+                <div>
+                    <label for="volumeFlow" class="block text-sm font-medium text-gray-700">Volumenstrom (Q) [m³/s]</label>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <input type="range" id="volumeFlowSlider" min="0" max="10" step="0.1" value="2.0" class="flex-grow">
+                        <input type="number" id="volumeFlow" min="0" max="10" step="0.1" value="2.0" class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raumtyp Auswahl -->
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Art des Raumes:</label>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <input type="radio" id="roomTypeSafetyStairwell" name="roomType" value="Sicherheitstreppenraum" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                        <label for="roomTypeSafetyStairwell" class="ml-2 block text-sm text-gray-900">Sicherheitstreppenraum</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="roomTypeFirefighterElevator" name="roomType" value="Feuerwehraufzug" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                        <label for="roomTypeFirefighterElevator" class="ml-2 block text-sm text-gray-900">Feuerwehraufzug</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Ergebnisse -->
+            <div class="mt-8 space-y-4">
+                <h2 class="text-xl font-semibold text-blue-600">Ergebnisse</h2>
+
+                <!-- Türfläche -->
+                <div class="p-3 rounded-md shadow-sm border border-gray-200">
+                    <p class="text-sm font-medium text-gray-700">Türfläche (A): <span id="doorAreaResult" class="font-bold text-gray-900"></span> m²</p>
+                </div>
+
+                <!-- Differenzdruck (zur Anzeige des aktuellen Wertes) -->
+                <div class="p-3 rounded-md shadow-sm border border-gray-200">
+                    <p class="text-sm font-medium text-gray-700">Aktueller Differenzdruck (Δp): <span id="displayDifferentialPressureResult" class="font-bold text-gray-900"></span> Pa</p>
+                </div>
+
+                <!-- Betätigungskraft -->
+                <div id="operatingForceDisplay" class="p-3 rounded-md shadow-sm border">
+                    <p class="text-sm font-medium text-gray-700">Berechnete Betätigungskraft (F_T): <span id="operatingForceResult" class="font-bold"></span> N <span id="doorCloserForceContribution" class="text-gray-500 text-sm"></span></p>
+                    <p id="operatingForceStatus" class="text-xs font-semibold mt-1"></p>
+                </div>
+
+                <!-- Durchströmungsgeschwindigkeit -->
+                <div id="airflowVelocityDisplay" class="p-3 rounded-md shadow-sm border">
+                    <p class="text-sm font-medium text-gray-700">Berechnete Durchströmungsgeschwindigkeit (v): <span id="airflowVelocityResult" class="font-bold"></span> m/s</p>
+                    <p id="airflowVelocityStatus" class="text-xs font-semibold mt-1"></p>
+                </div>
+
+                <!-- Durchströmungsvolumen (in m³/h) -->
+                <div class="p-3 rounded-md shadow-sm border border-gray-200">
+                    <p class="text-sm font-medium text-gray-700">Durchströmungsvolumen (Q): <span id="volumeFlowHourResult" class="font-bold text-gray-900"></span> m³/h</p>
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="mt-6 text-center">
+                <button id="resetButton" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
+                    Werte zurücksetzen
+                </button>
+            </div>
+
+            <!-- Transparenz-Bereich (Formeln & Hinweise) -->
+            <details class="mt-8 bg-gray-50 p-4 rounded-md shadow-inner">
+                <summary class="text-lg font-semibold text-blue-600 cursor-pointer">Formeln & Normative Hinweise</summary>
+                <div class="mt-4 text-gray-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <!-- Spalte 1: Formeln -->
+                        <div>
+                            <h3 class="font-bold text-base mb-2">Formeln:</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-semibold">Türfläche (A)</h4>
+                                    <p>A = B × H</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Betätigungskraft (F_T)</h4>
+                                    <p>F_T = (Δp × A × b1 + M₀) / b2</p>
+                                    <ul class="list-disc list-inside pl-4 text-xs text-gray-600">
+                                        <li>**b1:** Abstand zwischen dem Angriffspunkt der Druckkraft (Mitte Türfläche) und der Drehachse = B / 2</li>
+                                        <li>**b2:** Abstand vom Türgriff zur Drehachse (variabel einstellbar)</li>
+                                        <li>**M₀:** Moment des Türschließers</li>
+                                        <li>**Δp:** Differenzdruck</li>
+                                        <li>**A:** Türfläche</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Durchströmungsgeschwindigkeit (v)</h4>
+                                    <p>v = Q / A</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Durchströmungsvolumen (Q_h in m³/h)</h4>
+                                    <p>Q_h = Q_s × 3600</p>
+                                    <ul class="list-disc list-inside pl-4 text-xs text-gray-600">
+                                        <li>**Q_s:** Volumenstrom in m³/s</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spalte 2: Hinweise -->
+                        <div>
+                            <h3 class="font-bold text-base mb-2">Normative Hinweise:</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-semibold">Betriebszustände der DBA</h4>
+                                    <ul class="list-disc list-inside pl-4 text-xs text-gray-600">
+                                        <li>Der Rechner modelliert zwei separate Bemessungskriterien:
+                                            <ol class="list-decimal list-inside pl-4">
+                                                <li>**Betätigungskraft** für geschlossene Türen (beeinflusst durch **Differenzdruck**).</li>
+                                                <li>**Durchströmungsgeschwindigkeit** für offene Türen (beeinflusst durch **Volumenstrom**).</li>
+                                            </ol>
+                                            Ein realer Ventilator muss in der Lage sein, beide Anforderungen zu erfüllen.
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Grenzwerte</h4>
+                                    <ul class="list-disc list-inside pl-4 text-xs text-gray-600">
+                                        <li>**Türöffnungskraft:** Max. 100 N am Türgriff.</li>
+                                        <li>**Strömungsgeschw. Sicherheitstreppenraum:** Min. 2,0 m/s.</li>
+                                        <li>**Strömungsgeschw. Feuerwehraufzugsvorraum:** Min. 0,75 m/s.</li>
+                                        <li>**Differenzdruck (Δp):** Empfohlen min. 25 Pa. Typisch 30-40 Pa. Max. 300 Pa (aber 100 N Grenze beachten).</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Türschließer-Moment (M₀) nach EN 1154</h4>
+                                    <p class="text-xs text-gray-600">Anhaltspunkte (Herstellerangaben beachten!):</p>
+                                    <table class="w-full text-xs text-gray-600 mt-1 border-collapse border border-gray-300">
+                                        <thead>
+                                            <tr class="bg-gray-100">
+                                                <th class="border border-gray-300 p-1 text-left">EN Klasse</th>
+                                                <th class="border border-gray-300 p-1 text-left">M₀ [Nm] (ca.)</th>
+                                                <th class="border border-gray-300 p-1 text-left">Max. Türbreite (ca.)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="border border-gray-300 p-1">EN 3</td>
+                                                <td class="border border-gray-300 p-1">19</td>
+                                                <td class="border border-gray-300 p-1">950 mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-gray-300 p-1">EN 4</td>
+                                                <td class="border border-gray-300 p-1">22.5</td>
+                                                <td class="border border-gray-300 p-1">1100 mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-gray-300 p-1">EN 5</td>
+                                                <td class="border border-gray-300 p-1">27.5</td>
+                                                <td class="border border-gray-300 p-1">1250 mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-gray-300 p-1">EN 6</td>
+                                                <td class="border border-gray-300 p-1">35</td>
+                                                <td class="border border-gray-300 p-1">1400 mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-gray-300 p-1">EN 7</td>
+                                                <td class="border border-gray-300 p-1">45</td>
+                                                <td class="border border-gray-300 p-1">>1400 mm</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Referenzen</h4>
+                                    <ul class="list-disc list-inside pl-4 text-xs text-gray-600">
+                                        <li>DBA-Anwenderleitfaden - Stand Jan. 2024</li>
+                                        <li>Muster-Verwaltungsvorschrift Technische Baubestimmungen (MVV TB) Anhang 14</li>
+                                        <li>VDI 6019 Blatt 1 (Berechnungshilfen für Rauch- und Wärmefreihaltung)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- Link zur externen JavaScript-Datei -->
+    <script src="script.js"></script>
+</body>
+</html>
